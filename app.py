@@ -10,11 +10,13 @@ from bs4 import BeautifulSoup
 import requests
 from flask import send_from_directory
 
+
+app = Flask(__name__)
+CORS(app)
+
 @app.route('/')
 def home():
     return send_from_directory('static', 'index.html')
-app = Flask(__name__)
-CORS(app)
 
 # --- In-memory alert list (use DB in production) ---
 alerts = []
