@@ -24,8 +24,8 @@ alerts = []
 # --- Email Settings (replace with your credentials) ---
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
-EMAIL_ADDRESS = 'your_email@gmail.com'
-EMAIL_PASSWORD = 'your_app_password'
+EMAIL_ADDRESS = 'krishjshah1@gmail.con'
+EMAIL_PASSWORD = 'kbsc atdy qmfw dmnm'
 
 # --- Helper: Send Email ---
 def send_email(to_email, subject, body):
@@ -59,12 +59,21 @@ def get_price(url):
 # --- Background Job to Monitor Prices ---
 def price_monitor_loop():
     while True:
+        print("🔄 Running price monitor loop...")
         for alert in alerts:
             price = get_price(alert['url'])
+            print(f"Checking: {alert['url']}")
+            print(f"Found price: {price}, Target price: {alert['target']}")
             if price is not None and price <= alert['target'] and not alert['notified']:
-                send_email(alert['email'], "📉 Price Drop Alert!", f"Product: {alert['url']}\nPrice: ₹{price}")
+                print(f"✅ Sending email to {alert['email']}")
+                send_email(
+                    alert['email'],
+                    "📉 Price Drop Alert!",
+                    f"Price dropped to ₹{price}!\n{alert['url']}"
+                )
                 alert['notified'] = True
-        time.sleep(1800)  # Check every 30 min
+        time.sleep(30)  # check every 30 seconds temporarily
+
 
 # --- API Route to Create Alert ---
 @app.route('/create-alert', methods=['POST'])
