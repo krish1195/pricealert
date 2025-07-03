@@ -1,0 +1,71 @@
+<!-- === index.html (Frontend Form) === -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Price Alert Setup</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+        max-width: 600px;
+        margin: auto;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin-top: 10px;
+        width: 100%;
+      }
+      .success {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>📢 Create a Price Alert</h2>
+    <form id="alertForm">
+      <label>Product URL</label><br />
+      <input type="text" id="url" required /><br />
+
+      <label>Target Price (₹)</label><br />
+      <input type="number" id="price" required /><br />
+
+      <label>Your Email</label><br />
+      <input type="email" id="email" required /><br />
+
+      <button type="submit">Set Alert</button>
+      <p id="message"></p>
+    </form>
+
+    <script>
+      const form = document.getElementById("alertForm");
+      const message = document.getElementById("message");
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        const data = {
+          url: document.getElementById("url").value,
+          price: document.getElementById("price").value,
+          email: document.getElementById("email").value,
+        };
+
+        const res = await fetch("http://localhost:5000/create-alert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        if (res.ok) {
+          message.textContent = "✅ Alert created successfully!";
+          message.className = "success";
+          form.reset();
+        } else {
+          message.textContent = "❌ Failed to create alert.";
+          message.className = "error";
+        }
+      });
+    </script>
+  </body>
+</html>
