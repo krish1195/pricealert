@@ -8,7 +8,11 @@ import smtplib
 from email.mime.text import MIMEText
 from bs4 import BeautifulSoup
 import requests
+from flask import send_from_directory
 
+@app.route('/')
+def home():
+    return send_from_directory('static', 'index.html')
 app = Flask(__name__)
 CORS(app)
 
