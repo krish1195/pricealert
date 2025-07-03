@@ -88,9 +88,10 @@ def create_alert():
     return jsonify({'status': 'alert created'})
 
 if __name__ == '__main__':
-    threading.Thread(target=price_monitor_loop, daemon=True).start()
     import os
+    threading.Thread(target=price_monitor_loop, daemon=True).start()
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host="0.0.0.0", port=port)
+
 
 
