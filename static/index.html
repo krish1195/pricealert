@@ -1,69 +1,97 @@
-<!-- === index.html (Frontend Form) === -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Price Alert Setup</title>
+    <title>Price Drop Alert</title>
     <style>
       body {
-        font-family: Arial;
-        padding: 20px;
+        font-family: Arial, sans-serif;
         max-width: 600px;
-        margin: auto;
+        margin: 40px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f7f7f7;
+      }
+      h2 {
+        text-align: center;
       }
       input,
       button {
+        width: 100%;
         padding: 10px;
         margin-top: 10px;
-        width: 100%;
+        font-size: 16px;
       }
-      .success {
-        color: green;
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #message {
+        margin-top: 15px;
+        font-weight: bold;
       }
     </style>
   </head>
   <body>
-    <h2>📢 Create a Price Alert</h2>
+    <h2>🛍️ Create a Price Drop Alert</h2>
     <form id="alertForm">
-      <label>Product URL</label><br />
-      <input type="text" id="url" required /><br />
+      <label for="url">Product URL:</label>
+      <input type="text" id="url" required placeholder="https://..." />
 
-      <label>Target Price (₹)</label><br />
-      <input type="number" id="price" required /><br />
+      <label for="price">Target Price (₹):</label>
+      <input type="number" id="price" required />
 
-      <label>Your Email</label><br />
-      <input type="email" id="email" required /><br />
+      <label for="email">Your Email:</label>
+      <input type="email" id="email" required />
 
       <button type="submit">Set Alert</button>
-      <p id="message"></p>
     </form>
 
+    <p id="message"></p>
+
     <script>
+      console.log("📦 JS loaded!");
+
       const form = document.getElementById("alertForm");
       const message = document.getElementById("message");
 
       form.addEventListener("submit", async e => {
         e.preventDefault();
+
         const data = {
           url: document.getElementById("url").value,
           price: document.getElementById("price").value,
           email: document.getElementById("email").value,
         };
 
-        const res = await fetch("http://localhost:5000/create-alert", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
+        try {
+          const response = await fetch("/create-alert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
 
-        if (res.ok) {
-          message.textContent = "✅ Alert created successfully!";
-          message.className = "success";
-          form.reset();
-        } else {
-          message.textContent = "❌ Failed to create alert.";
-          message.className = "error";
+          if (response.ok) {
+            message.textContent = "✅ Alert created successfully!";
+            message.style.color = "green";
+            form.reset();
+          } else {
+            message.textContent = "❌ Failed to create alert.";
+            message.style.color = "red";
+          }
+        } catch (error) {
+          console.error(error);
+          message.textContent = "⚠️ Error sending request.";
+          message.style.color = "red";
         }
       });
     </script>
